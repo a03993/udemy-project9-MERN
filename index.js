@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const port = 8080;
+const { auth } = require("./routes/index");
 
 // connect to the database
 mongoose
@@ -20,6 +21,8 @@ mongoose
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use("/api/user", auth);
 
 // routes
 app.get("/", (req, res) => {

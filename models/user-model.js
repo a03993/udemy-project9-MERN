@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 // create a schema
 const userSchema = new Schema({
   username: { type: String, required: true, minlength: 3, maxlength: 30 },
-  email: { type: String, required: true, minlength: 3, maxlength: 200 },
+  email: { type: String, required: true, minlength: 6, maxlength: 200 },
   password: { type: String, required: true, minlength: 8, maxlength: 128 },
   role: { type: String, enum: ["student", "instructor"], default: "student" },
   createdAt: { type: Date, default: Date.now },
