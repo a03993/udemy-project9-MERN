@@ -4,13 +4,13 @@ const mongoose = require("mongoose");
 const app = express();
 const port = 8080;
 const { auth } = require("./routes/index");
+// load the environment variables
+const dotenv = require("dotenv");
+dotenv.config();
 
 // connect to the database
 mongoose
-  .connect("mongodb://localhost:27017/mydatabase", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect("mongodb://localhost:27017/mydatabase")
   .then(() => {
     console.log("Connected to the database");
   })
