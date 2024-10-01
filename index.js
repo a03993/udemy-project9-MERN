@@ -3,10 +3,12 @@ const express = require("express");
 const mongoose = require("mongoose");
 const app = express();
 const port = 8080;
-const { auth } = require("./routes/index");
+const { auth, course } = require("./routes/index");
 // load the environment variables
 const dotenv = require("dotenv");
 dotenv.config();
+const passport = require("passport");
+require("./config/passport")(passport);
 
 // connect to the database
 mongoose
@@ -23,6 +25,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/user", auth);
+app.use(
+  "/api/courses",
+  passport.authenticate("jwt", { session: false }),
+  course
+);
 
 // routes
 app.get("/", (req, res) => {

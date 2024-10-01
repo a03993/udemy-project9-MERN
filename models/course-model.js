@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const courseSchema = new Schema({
-  id: { type: String, required: true, unique: true },
+  id: { type: String, unique: true },
   title: { type: String, required: true, minlength: 3, maxlength: 50 },
   description: { type: String, required: true, minlength: 50, maxlength: 200 },
   price: { type: Number, required: true, min: 0, max: 9999 },
