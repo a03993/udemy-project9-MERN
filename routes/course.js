@@ -8,7 +8,34 @@ router.use((req, res, next) => {
   next();
 });
 
+// Get all courses in the system along with their instructors' usernames and emails
+router.get("/", async (req, res) => {
+  try {
+    let courseFound = await Course.find({})
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// Route to search for a course by its ID
+router.get("/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let courseFound = await Course.find({ _id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+    return res.send(courseFound);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+// New a course
 router.post("/", async (req, res) => {
+  // Check if matches with rule
   const { error } = courseValidation(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
@@ -28,15 +55,65 @@ router.post("/", async (req, res) => {
       price,
       instructor: req.user._id,
     });
-    console.log({ title, description, price });
     let savedCourse = await newCourse.save();
-    console.log(req.user);
     return res
       .status(200)
       .send({ msg: "The course is have been saved.", savedCourse });
   } catch (err) {
-    console.log(err);
     return res.status(500).send("Failed to save the course...");
+  }
+});
+
+// Update the course
+router.patch("/:_id", async (req, res) => {
+  // Check if matches with rule
+  const { error } = courseValidation(req.body);
+  if (error) return res.status(400).send(error.details[0].message);
+
+  let { _id } = req.params;
+  // Check if course exists
+  try {
+    let courseFound = await Course.findOne({ _id });
+    if (!courseFound) {
+      return res.status(404).send("Course not found, cannot update.");
+    }
+    // Check if user is instructor
+    if (courseFound.instructor.equals(req.user._id)) {
+      // Update the course
+      let updatedCourse = await Course.findByIdAndUpdate({ _id }, req.body, {
+        new: true,
+        runValidators: true,
+      });
+      return res
+        .status(200)
+        .send({ msg: "The course is have been updated!", updatedCourse });
+    } else {
+      return res.status(500).send("You are not an instructor.");
+    }
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
+// Remove the course
+router.delete("/:_id", async (req, res) => {
+  let { _id } = req.params;
+  // Check if course exists
+  try {
+    let courseFound = await Course.findOne({ _id });
+    if (!courseFound) {
+      return res.status(404).send("Course not found, cannot remove.");
+    }
+    // Check if user is instructor
+    if (courseFound.instructor.equals(req.user._id)) {
+      // Remove the course
+      await Course.deleteOne({ _id }).exec();
+      return res.send("This course has been removed.");
+    } else {
+      return res.status(500).send("You are not an instructor.");
+    }
+  } catch (err) {
+    return res.status(500).send(err);
   }
 });
 
