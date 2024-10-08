@@ -9,6 +9,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 const passport = require("passport");
 require("./config/passport")(passport);
+const cors = require("cors");
 
 // connect to the database
 mongoose
@@ -23,6 +24,7 @@ mongoose
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use("/api/user", auth);
 app.use(
