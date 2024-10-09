@@ -20,6 +20,24 @@ router.get("/", async (req, res) => {
   }
 });
 
+// Route to search for a course by instructors ID
+router.get("/instructor/:_instructor_id", async (req, res) => {
+  let { _instructor_id } = req.params;
+  let coursesFound = await Course.find({ instructor: _instructor_id })
+    .populate("instructor", ["username", "email"])
+    .exec();
+  return res.send(coursesFound);
+});
+
+// Route to search for a course by students ID
+router.get("/student/:_student_id", async (req, res) => {
+  let { _student_id } = req.params;
+  let coursesFound = await Course.find({ student: _student_id })
+    .populate("student", ["username", "email"])
+    .exec();
+  return res.send(coursesFound);
+});
+
 // Route to search for a course by its ID
 router.get("/:_id", async (req, res) => {
   let { _id } = req.params;
