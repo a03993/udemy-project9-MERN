@@ -52,6 +52,25 @@ router.get("/:_id", async (req, res) => {
   }
 });
 
+// Route to search for a course by course's title
+router.get("/findByName/:name", async (req, res) => {
+  let { name } = req.params;
+  try {
+    let courseFound = await Course.find({ title: name })
+      .populate("instructor", ["email", "username"])
+      .exec();
+    if (!courseFound || courseFound.length === 0) {
+      return res.status(404).send({ message: "Course not found" });
+    }
+    return res.send(courseFound);
+  } catch (err) {
+    console.error("Error fetching course by name:", err);
+    return res
+      .status(500)
+      .send({ message: "Internal Server Error", error: err.message });
+  }
+});
+
 // New a course
 router.post("/", async (req, res) => {
   // Check if matches with rule

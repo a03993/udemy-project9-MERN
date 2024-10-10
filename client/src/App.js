@@ -7,6 +7,7 @@ import LoginComponent from "./components/login-component";
 import ProfileComponent from "./components/profile-component";
 import CourseComponent from "./components/course-component";
 import PostCourseComponent from "./components/postCourse-component";
+import EnrollComponent from "./components/enroll-component";
 import AuthService from "./services/auth.service";
 
 function App() {
@@ -52,6 +53,10 @@ function App() {
           <Route
             path="/postCourse"
             element={<PostCourseComponent currentUser={currentUser} />}
+          ></Route>
+          <Route
+            path="/enroll"
+            element={<EnrollComponent currentUser={currentUser} />}
           ></Route>
         </Route>
       </Routes>
