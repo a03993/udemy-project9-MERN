@@ -2,6 +2,7 @@
 const router = require("express").Router();
 const { Course } = require("../models");
 const { courseValidation } = require("../validation");
+const { v4: uuidv4 } = require("uuid");
 
 router.use((req, res, next) => {
   console.log("It's receiving a request at course route...");
@@ -68,6 +69,7 @@ router.post("/", async (req, res) => {
   let { title, description, price } = req.body;
   try {
     let newCourse = new Course({
+      id: uuidv4(),
       title,
       description,
       price,
@@ -78,6 +80,7 @@ router.post("/", async (req, res) => {
       .status(200)
       .send({ msg: "The course is have been saved.", savedCourse });
   } catch (err) {
+    console.log(err);
     return res.status(500).send("Failed to save the course...");
   }
 });

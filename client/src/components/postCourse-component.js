@@ -2,8 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import CourseService from "../services/course.service";
 
-const PostCourseComponent = (props) => {
-  let { currentUser, setCurrentUser } = props;
+const PostCourseComponent = ({ currentUser, setCurrentUser }) => {
   let [title, setTitle] = useState("");
   let [description, setDescription] = useState("");
   let [price, setPrice] = useState(0);
