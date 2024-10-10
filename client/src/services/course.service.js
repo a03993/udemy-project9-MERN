@@ -56,12 +56,31 @@ class CourseService {
     } else {
       token = "";
     }
-    console.log(token);
+
     return axios.get(API_URL + "/findByName/" + encodeURIComponent(name), {
       headers: {
         Authorization: token,
       },
     });
+  }
+
+  enroll(_id) {
+    let token;
+    if (localStorage.getItem("user")) {
+      token = JSON.parse(localStorage.getItem("user")).token;
+    } else {
+      token = "";
+    }
+
+    return axios.post(
+      API_URL + "/enroll/" + _id,
+      {},
+      {
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
   }
 }
 

@@ -30,11 +30,11 @@ router.get("/instructor/:_instructor_id", async (req, res) => {
   return res.send(coursesFound);
 });
 
-// Route to search for a course by students ID
+// Route to search for a course by student's ID
 router.get("/student/:_student_id", async (req, res) => {
   let { _student_id } = req.params;
-  let coursesFound = await Course.find({ student: _student_id })
-    .populate("student", ["username", "email"])
+  let coursesFound = await Course.find({ students: _student_id })
+    .populate("instructor", ["username", "email"])
     .exec();
   return res.send(coursesFound);
 });
@@ -101,6 +101,19 @@ router.post("/", async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).send("Failed to save the course...");
+  }
+});
+
+//For student to enroll the new course by course's id
+router.post("/enroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let course = await Course.findOne({ _id }).exec();
+    course.students.push(req.user._id);
+    await course.save();
+    return res.send("Complete course enrollment!");
+  } catch (err) {
+    return res.send(err);
   }
 });
 
